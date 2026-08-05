@@ -15,7 +15,7 @@ Declare the exact plugin version in `dander.yaml`:
 plugins:
   servicenow:
     distribution: dander-connector-servicenow
-    version: 0.2.0rc1
+    version: 0.2.0
 ```
 
 Then install exactly what the manifest declares:
