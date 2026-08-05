@@ -6,7 +6,7 @@
 - Added exact incident counts without materializing source rows.
 - Added targeted incident lookup by validated `sys_id` with declared-field validation.
 - Extended the stateful simulator with count, lookup, auth, ACL, throttle, and malformed responses.
-- Prepared `0.2.0rc1` on Dander's generic API-v1 read-capability contract.
+- Promoted the accepted capability runtime to stable `0.2.0` without source changes.
 
 ## Try It
 
@@ -31,9 +31,8 @@ uv run pytest
 
 ## Remaining
 
-- Merge through protected CI and publish `0.2.0rc1`.
-- Verify an exact public source-free install.
-- Promote stable `0.2.0` only from this accepted runtime.
+- Continue retained-project soak observation on the newest stable connector.
+- Keep provider write-back and new table coverage for separately reviewed work.
 
 ## Review First
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0rc1 — 2026-08-05 (alpha)
+## 0.2.0 — 2026-08-05 (alpha)
 
 - Add record-free connection testing through ServiceNow's Aggregate API.
 - Add exact incident counts without materializing business records.
