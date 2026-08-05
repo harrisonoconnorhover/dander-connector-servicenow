@@ -2,11 +2,11 @@
 
 ## Finished
 
-- Published and live-validated the `0.1.0rc1` ServiceNow plugin candidate.
+- Published and live-validated the stable `0.1.0` ServiceNow plugin.
 - Registered the unique `servicenow_table` engine and presentation-safe incident descriptor.
 - Packaged the existing read-only connector declaration and raw schema.
 - Proved two duplicate-free hosted runs with released leases and a clean Terraform plan.
-- Prepared the runtime-identical stable `0.1.0` release metadata.
+- Prepared the runtime-identical `0.1.1` compatibility release for Dander `0.5.x`.
 
 ## Try It
 
@@ -24,6 +24,8 @@ uv run pytest
 - Wheel and source distribution built with the expected contract, workflow, license, and template files.
 - Outside-checkout wheel install: stable Dander 0.4.0, entry point, plugin API v1, engine, and template passed.
 - Live proof: 67 incidents, 4 assertions, 1 catalog asset, duplicate-free replay, and no drift.
+- `0.1.1`: 11 tests, lint, formatting, strict typing, dependency audit, build, and Dander
+  `0.5` API-v1 conformance passed.
 
 ## Decisions
 
@@ -33,8 +35,8 @@ uv run pytest
 
 ## Remaining
 
-- Merge the version-only stable release through protected `main` after CI passes.
-- Tag and publish `0.1.0` through the trusted release workflow.
+- Merge the compatibility-only release through protected `main` after CI passes.
+- Tag and publish `0.1.1` through the trusted release workflow.
 - Verify a clean public installation with Dander `0.4.0`.
 
 ## Review First
