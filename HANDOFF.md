@@ -2,11 +2,11 @@
 
 ## Finished
 
-- Created the public ServiceNow plugin repository and focused candidate branch.
+- Published and live-validated the `0.1.0rc1` ServiceNow plugin candidate.
 - Registered the unique `servicenow_table` engine and presentation-safe incident descriptor.
 - Packaged the existing read-only connector declaration and raw schema.
-- Added independent stateful simulator coverage for the accepted ServiceNow contract.
-- Added pinned Linux CI, packaging, dependency/secret scans, and trusted publication workflow.
+- Proved two duplicate-free hosted runs with released leases and a clean Terraform plan.
+- Prepared the runtime-identical stable `0.1.0` release metadata.
 
 ## Try It
 
@@ -23,6 +23,7 @@ uv run pytest
 - Dependency audit: no known vulnerabilities.
 - Wheel and source distribution built with the expected contract, workflow, license, and template files.
 - Outside-checkout wheel install: stable Dander 0.4.0, entry point, plugin API v1, engine, and template passed.
+- Live proof: 67 incidents, 4 assertions, 1 catalog asset, duplicate-free replay, and no drift.
 
 ## Decisions
 
@@ -32,9 +33,9 @@ uv run pytest
 
 ## Remaining
 
-- Open the focused candidate PR and let CI repeat package, Linux, and security checks.
-- Publish a candidate only after a protected repository workflow and explicit publication approval.
-- Complete isolated live acceptance before any retained-project change or support claim.
+- Merge the version-only stable release through protected `main` after CI passes.
+- Tag and publish `0.1.0` through the trusted release workflow.
+- Verify a clean public installation with Dander `0.4.0`.
 
 ## Review First
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.0
+
+- Promote the live-validated ServiceNow connector without runtime changes from `0.1.0rc1`.
+- Confirm two successful hosted incident runs, duplicate-free replay, released leases, and a
+  clean final Terraform plan against a disposable ServiceNow tenant.
+
 ## 0.1.0rc1
 
 - Add the first-party `servicenow_table` Dander connector plugin.
