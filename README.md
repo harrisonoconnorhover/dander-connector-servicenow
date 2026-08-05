@@ -5,8 +5,7 @@ First-party ServiceNow Table API connector plugin for
 
 > **Alpha:** pin Dander and this plugin exactly. The connector is read-only and supports one
 > stably ordered, full-read incident pipeline. It does not propagate source deletions.
-> This candidate is simulator-validated; independent acceptance against a live ServiceNow
-> tenant remains a release gate.
+> Version `0.1.0` is simulator- and live-validated against a disposable ServiceNow tenant.
 
 ## Install
 
@@ -16,7 +15,7 @@ Declare the exact plugin version in `dander.yaml`:
 plugins:
   servicenow:
     distribution: dander-connector-servicenow
-    version: 0.1.0rc1
+    version: 0.1.0
 ```
 
 Then install exactly what the manifest declares:
