@@ -110,6 +110,13 @@ class SimulatorState:
         with self._lock:
             return [dict(row) for row in self._rows.values()]
 
+    def get(self, sys_id: str) -> dict[str, object]:
+        with self._lock:
+            row = self._rows.get(sys_id)
+            if row is None:
+                raise HTTPException(status_code=404, detail={"error": "record_not_found"})
+            return dict(row)
+
     def create(self, payload: IncidentCreate) -> dict[str, object]:
         with self._lock:
             timestamp = self._tick()
@@ -164,7 +171,7 @@ class SimulatorState:
 def create_simulator() -> FastAPI:
     """Build a fresh simulator application with isolated mutable state."""
     state = SimulatorState(_load_rows())
-    app = FastAPI(title="Dander ServiceNow Table API simulator", version="1.0.0")
+    app = FastAPI(title="Dander ServiceNow Table API simulator", version="1.1.0")
     app.state.simulator = state
 
     @app.post("/oauth_token.do", operation_id="issueAccessToken")
@@ -211,6 +218,45 @@ def create_simulator() -> FastAPI:
         if state.scenario() is Scenario.MALFORMED_RECORD and page:
             page[0]["short_description"] = {"value": page[0].get("short_description")}
         return {"result": page}
+
+    @app.get("/api/now/stats/incident", operation_id="countIncidents")
+    def count_incidents(
+        authorization: Annotated[str | None, Header()] = None,
+        count: Annotated[str, Query(alias="sysparm_count", pattern=r"^true$")] = "true",
+    ) -> dict[str, dict[str, dict[str, str]]]:
+        del count
+        _require_access(authorization)
+        state.record_request("stats")
+        if state.scenario() is Scenario.MISSING_PERMISSIONS:
+            raise HTTPException(status_code=403, detail={"error": "insufficient_roles"})
+        if state.scenario() is Scenario.THROTTLING and state.consume_throttle():
+            raise HTTPException(status_code=429, detail={"error": "rate_limit"})
+        return {"result": {"stats": {"count": str(len(state.list_rows()))}}}
+
+    @app.get("/api/now/table/incident/{sys_id}", operation_id="getIncident")
+    def get_incident(
+        sys_id: Annotated[str, ApiPath(pattern=r"^[0-9a-f]{32}$")],
+        authorization: Annotated[str | None, Header()] = None,
+        fields: Annotated[str | None, Query(alias="sysparm_fields")] = None,
+        display_value: Annotated[bool, Query(alias="sysparm_display_value")] = False,
+        exclude_reference_link: Annotated[
+            bool, Query(alias="sysparm_exclude_reference_link")
+        ] = True,
+    ) -> dict[str, dict[str, object]]:
+        _require_access(authorization)
+        state.record_request("get")
+        if state.scenario() is Scenario.MISSING_PERMISSIONS:
+            raise HTTPException(status_code=403, detail={"error": "insufficient_roles"})
+        if state.scenario() is Scenario.THROTTLING and state.consume_throttle():
+            raise HTTPException(status_code=429, detail={"error": "rate_limit"})
+        if display_value or not exclude_reference_link:
+            raise HTTPException(status_code=400, detail={"error": "invalid_query_contract"})
+        selected = None if fields is None else tuple(item for item in fields.split(",") if item)
+        row = state.get(sys_id)
+        result = row if selected is None else {name: row.get(name) for name in selected}
+        if state.scenario() is Scenario.MALFORMED_RECORD:
+            result["short_description"] = {"value": result.get("short_description")}
+        return {"result": result}
 
     @app.post("/api/now/table/incident", operation_id="createIncident")
     def create_incident(

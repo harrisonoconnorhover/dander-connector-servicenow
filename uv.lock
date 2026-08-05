@@ -451,16 +451,16 @@ wheels = [
 
 [[package]]
 name = "dander-connector-servicenow"
-version = "0.1.1"
+version = "0.2.0rc1"
 source = { editable = "." }
 dependencies = [
     { name = "dander-platform" },
+    { name = "httpx" },
 ]
 
 [package.optional-dependencies]
 dev = [
     { name = "fastapi" },
-    { name = "httpx" },
     { name = "mypy" },
     { name = "pytest" },
     { name = "ruff" },
@@ -470,9 +470,9 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dander-platform", specifier = ">=0.4.0,<0.6" },
+    { name = "dander-platform", specifier = ">=0.5.0,<0.6" },
     { name = "fastapi", marker = "extra == 'dev'", specifier = ">=0.115" },
-    { name = "httpx", marker = "extra == 'dev'", specifier = ">=0.27" },
+    { name = "httpx", specifier = ">=0.27" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6" },
@@ -483,7 +483,7 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "dander-platform"
-version = "0.4.0"
+version = "0.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "dlt", extra = ["bigquery"] },
@@ -503,9 +503,9 @@ dependencies = [
     { name = "tenacity" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/eb/01/aee934c18264dd37d6b3fcf0705b55a89218c955150317d67f70f7919726/dander_platform-0.4.0.tar.gz", hash = "sha256:a5ddf7aa0f8bd569adc50160486a74d382df4d61c42964228f392deeecdcf00d", size = 501138, upload-time = "2026-08-05T08:11:57.309Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1f/52/7356b0e9bcec73d780df53282b96e35fcfa2566685d75a447f15d4c2bd60/dander_platform-0.5.0.tar.gz", hash = "sha256:fc26b17e959be06f3aa8cfe5371fa22bfe25705d83e6712436a2a903ae5bb5d7", size = 529006, upload-time = "2026-08-05T20:03:54.168Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ba/f2/b99a76ca4e1c84c03f91a94ca2e558ba444d11585b3b07540b845b08f1ba/dander_platform-0.4.0-py3-none-any.whl", hash = "sha256:6a363a5cf40b78e446fdaed8b460b287f4a938c87874ee345032d4b6846687d5", size = 287938, upload-time = "2026-08-05T08:11:55.979Z" },
+    { url = "https://files.pythonhosted.org/packages/f6/85/8ceca6f9f8c573b1986fbc654cb1095ef09586d08c2e13457bdac208f111/dander_platform-0.5.0-py3-none-any.whl", hash = "sha256:953049b470de7e038e8b85807c064221813e1e577c69c0139e6a16f17ba34078", size = 313278, upload-time = "2026-08-05T20:03:52.395Z" },
 ]
 
 [[package]]

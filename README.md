@@ -15,7 +15,7 @@ Declare the exact plugin version in `dander.yaml`:
 plugins:
   servicenow:
     distribution: dander-connector-servicenow
-    version: 0.1.1
+    version: 0.2.0rc1
 ```
 
 Then install exactly what the manifest declares:
@@ -38,6 +38,18 @@ secret in Dander's configured secret store.
 - Publication: Dander's existing SCD1 writer
 - Pagination: stable full reads ordered by `(sys_updated_on, sys_id)` with bounded offset pages
 - Memory: each response page is consumed through Dander's generic dlt REST runtime
+- Optional reads: exact Aggregate API count and one incident lookup by validated `sys_id`
+- Connection check: authenticated Aggregate API probe that returns no incident records
+
+With Dander `0.5.0` or newer, inspect and check an installed pipeline without running ingestion:
+
+```console
+dander connector inspect PIPELINE_ID
+dander connector check PIPELINE_ID
+```
+
+The ServiceNow OAuth user must have read access to both the incident Table API and its Aggregate
+API. Targeted lookups request only the fields declared in the connector schema.
 
 The existing Dander `engine: dlt` ServiceNow configuration remains a compatibility fallback. An
 explicitly pinned plugin uses the plugin-owned `servicenow_table` engine without duplicating the
