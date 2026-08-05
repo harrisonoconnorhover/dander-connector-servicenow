@@ -8,7 +8,15 @@ from typing import TYPE_CHECKING, Any, cast
 import httpx
 import pytest
 import yaml
-from dander.ingestion import load_source_config
+from dander.ingestion import (
+    RECORD_NOT_FOUND,
+    ConnectionStatus,
+    ConnectorOperation,
+    CountResult,
+    RecordNotFound,
+    SourceCapabilities,
+    load_source_config,
+)
 from dander.runtime import PipelineRunner, RawSchemaError
 from dander.security import OAuth2ClientCredentials, OAuthTokenError
 from dander.state import SqliteWatermarkStore
@@ -16,7 +24,7 @@ from dander.writer import WriteMode, WritePattern, WriteTarget
 from dlt.extract.exceptions import ResourceExtractionError
 from dlt.sources.helpers.rest_client.paginators import OffsetPaginator
 
-from dander_connector_servicenow.source import ServiceNowTableSource
+from dander_connector_servicenow.source import ServiceNowSourceError, ServiceNowTableSource
 from tests.conftest import (
     SyntheticSecrets,
     build_source,
@@ -88,8 +96,10 @@ def test_tracked_openapi_contract_matches_fastapi_operations() -> None:
         "issueAccessToken",
         "listIncidents",
         "createIncident",
+        "countIncidents",
         "updateIncident",
         "deleteIncident",
+        "getIncident",
         "setScenario",
         "resetSimulator",
     }
@@ -253,3 +263,131 @@ def test_declared_discovery_has_no_network(
     discovered = source.discover()
 
     assert discovered["incidents"]["incremental_cursor"] is None
+
+
+def test_read_capabilities_are_structurally_discovered(
+    simulator_server: SimulatorServer,
+    config: SourceConfig,
+) -> None:
+    source = build_source(config, simulator_server)
+
+    assert SourceCapabilities(source).supported_operations == frozenset(
+        {
+            ConnectorOperation.COUNT,
+            ConnectorOperation.GET_SINGLE_OBJECT,
+            ConnectorOperation.TEST_CONNECTION,
+        }
+    )
+
+
+def test_connection_uses_scalar_aggregate_without_business_records(
+    simulator_server: SimulatorServer,
+    config: SourceConfig,
+) -> None:
+    source = build_source(config, simulator_server)
+
+    assert source.test_connection() == ConnectionStatus(ok=True)
+    requests = cast("dict[str, int]", simulator_server.snapshot()["requests"])
+    assert requests == {"token": 1, "stats": 1}
+
+
+@pytest.mark.parametrize(
+    ("scenario", "detail"),
+    [
+        ("expired_credentials", "authentication failed"),
+        ("missing_permissions", "permission denied"),
+    ],
+)
+def test_connection_returns_expected_auth_refusal(
+    simulator_server: SimulatorServer,
+    config: SourceConfig,
+    scenario: str,
+    detail: str,
+) -> None:
+    _set_scenario(simulator_server, scenario)
+
+    assert build_source(config, simulator_server).test_connection() == ConnectionStatus(
+        ok=False,
+        detail=detail,
+    )
+
+
+def test_count_uses_exact_aggregate_and_retries_throttling(
+    simulator_server: SimulatorServer,
+    config: SourceConfig,
+) -> None:
+    _set_scenario(simulator_server, "throttling")
+    source = build_source(config, simulator_server)
+
+    assert source.count("incidents") == CountResult.exact(5)
+    requests = cast("dict[str, int]", simulator_server.snapshot()["requests"])
+    assert requests["stats"] == 2
+
+
+def test_count_rejects_unsupported_cursor_before_network(
+    simulator_server: SimulatorServer,
+    config: SourceConfig,
+) -> None:
+    source = build_source(config, simulator_server)
+
+    with pytest.raises(ServiceNowSourceError, match="does not support cursor-bounded counts"):
+        source.count("incidents", since="2026-08-01 00:00:00")
+
+    assert simulator_server.snapshot()["requests"] == {}
+
+
+def test_get_single_object_fetches_one_sys_id_and_matches_extract_shape(
+    simulator_server: SimulatorServer,
+    config: SourceConfig,
+) -> None:
+    source = build_source(config, simulator_server)
+    sys_id = "11111111111111111111111111111111"
+
+    record = source.get_single_object("incidents", {"sys_id": sys_id})
+
+    assert not isinstance(record, RecordNotFound)
+    assert record["sys_id"] == sys_id
+    assert record["number"] == "INC0010001"
+    assert set(record) == {field.name for field in config.endpoints[0].raw_schema}
+    requests = cast("dict[str, int]", simulator_server.snapshot()["requests"])
+    assert requests == {"token": 1, "get": 1}
+
+
+def test_get_single_object_returns_named_not_found_sentinel(
+    simulator_server: SimulatorServer,
+    config: SourceConfig,
+) -> None:
+    source = build_source(config, simulator_server)
+
+    assert source.get_single_object("incidents", {"sys_id": "f" * 32}) is RECORD_NOT_FOUND
+
+
+@pytest.mark.parametrize(
+    "identity",
+    [{}, {"other": "1" * 32}, {"sys_id": "unsafe value"}],
+)
+def test_get_single_object_rejects_invalid_identity_before_network(
+    simulator_server: SimulatorServer,
+    config: SourceConfig,
+    identity: dict[str, str],
+) -> None:
+    source = build_source(config, simulator_server)
+
+    with pytest.raises(ServiceNowSourceError, match="identity field 'sys_id'|invalid sys_id"):
+        source.get_single_object("incidents", identity)
+
+    assert simulator_server.snapshot()["requests"] == {}
+
+
+def test_get_single_object_rejects_malformed_record(
+    simulator_server: SimulatorServer,
+    config: SourceConfig,
+) -> None:
+    _set_scenario(simulator_server, "malformed_record")
+    source = build_source(config, simulator_server)
+
+    with pytest.raises(ServiceNowSourceError, match="contained structured data"):
+        source.get_single_object(
+            "incidents",
+            {"sys_id": "11111111111111111111111111111111"},
+        )

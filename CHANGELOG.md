@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0rc1 — 2026-08-05 (alpha)
+
+- Add record-free connection testing through ServiceNow's Aggregate API.
+- Add exact incident counts without materializing business records.
+- Add targeted incident lookup by validated `sys_id` through the Table API.
+- Require Dander `0.5.x` for the shared read-capability contract.
+
 ## 0.1.1
 
 - Declare compatibility with Dander `0.5.x`; connector runtime behavior is unchanged from
