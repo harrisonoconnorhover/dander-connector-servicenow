@@ -1,0 +1,52 @@
+openapi: 3.1.0
+info:
+  title: Dander ServiceNow Table API simulator
+  version: 1.0.0
+  description: >-
+    Synthetic contract for the read-only incident connector. Mutation operations prepare
+    acceptance state only and are not used by the connector.
+paths:
+  /oauth_token.do:
+    post:
+      operationId: issueAccessToken
+      responses:
+        "200": {description: OAuth access token.}
+        "401": {description: Invalid or expired client credentials.}
+  /api/now/table/incident:
+    get:
+      operationId: listIncidents
+      responses:
+        "200": {description: Ordered page of incident records.}
+        "401": {description: Missing or expired access token.}
+        "403": {description: Integration user lacks incident read access.}
+        "429": {description: Request throttled.}
+    post:
+      operationId: createIncident
+      responses:
+        "200": {description: Synthetic incident created.}
+  /api/now/table/incident/{sys_id}:
+    parameters:
+      - name: sys_id
+        in: path
+        required: true
+        schema: {type: string, pattern: "^[0-9a-f]{32}$"}
+    patch:
+      operationId: updateIncident
+      responses:
+        "200": {description: Synthetic incident updated.}
+        "404": {description: Incident not found.}
+    delete:
+      operationId: deleteIncident
+      responses:
+        "204": {description: Synthetic incident deleted.}
+        "404": {description: Incident not found.}
+  /_dander/scenario:
+    put:
+      operationId: setScenario
+      responses:
+        "200": {description: Named scenario selected.}
+  /_dander/reset:
+    post:
+      operationId: resetSimulator
+      responses:
+        "200": {description: Fixtures and simulator state reset.}

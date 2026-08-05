@@ -1,0 +1,77 @@
+[project]
+name = "dander-connector-servicenow"
+version = "0.1.0rc1"
+description = "ServiceNow Table API connector plugin for Dander."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+authors = [{ name = "Harrison O'Connor-Hoover" }]
+keywords = ["dander", "servicenow", "table-api", "etl"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Database",
+]
+dependencies = [
+  "dander-platform>=0.4.0,<0.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/harrisonoconnorhover/dander-connector-servicenow"
+Issues = "https://github.com/harrisonoconnorhover/dander-connector-servicenow/issues"
+Repository = "https://github.com/harrisonoconnorhover/dander-connector-servicenow.git"
+
+[project.entry-points."dander.connectors"]
+servicenow = "dander_connector_servicenow.plugin:create_plugin"
+
+[project.optional-dependencies]
+dev = [
+  "fastapi>=0.115",
+  "httpx>=0.27",
+  "mypy>=1.11",
+  "pytest>=8.3",
+  "ruff>=0.6",
+  "types-pyyaml",
+  "uvicorn>=0.30",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dander_connector_servicenow"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  ".github",
+  "CHANGELOG.md",
+  "HANDOFF.md",
+  "LICENSE",
+  "README.md",
+  "contracts",
+  "pyproject.toml",
+  "src",
+  "tests",
+  "uv.lock",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "TCH", "ANN"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
