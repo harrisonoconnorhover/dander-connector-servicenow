@@ -2,11 +2,12 @@
 
 ## Finished
 
-- Added record-free ServiceNow connection testing through the Aggregate API.
-- Added exact incident counts without materializing source rows.
-- Added targeted incident lookup by validated `sys_id` with declared-field validation.
-- Extended the stateful simulator with count, lookup, auth, ACL, throttle, and malformed responses.
-- Promoted the accepted capability runtime to stable `0.2.0` without source changes.
+- Published stable ServiceNow connector `0.2.0` after simulator and disposable-tenant acceptance.
+- Added record-free connection testing, exact incident counts, and validated targeted lookup while
+  preserving the bounded read-only incident pipeline.
+- Installed the public plugin source-free in the retained Dander project with an exact manifest
+  pin and Dander `0.5.x` compatibility.
+- Corrected the stale README release wording.
 
 ## Try It
 
@@ -17,25 +18,24 @@ uv run pytest
 
 ## Checks
 
-- All 23 tests passed against the stateful simulator, including the existing extraction suite.
-- Ruff, formatting, strict mypy, dependency audit, and `git diff --check` passed.
-- Wheel and source distribution built; an outside-checkout install passed API-v1 conformance with
-  public Dander `0.5.0`.
-- Disposable-tenant proof passed connection check, exact count (`67`), and direct incident lookup.
+- Ruff, formatting, strict mypy, and all 23 simulator-backed tests passed.
+- Disposable-tenant proof covered connection, exact count, targeted lookup, hosted ingestion, and
+  replay; retained Terraform later reconciled without drift.
+- Local Markdown links and `git diff --check` passed.
 
 ## Decisions
 
-- Reuse Dander's generic REST runtime for extraction and provider-native scalar/targeted read APIs.
-- Use the Aggregate API for count and connection checks so no incident records are returned.
+- Reuse Dander's generic REST runtime for extraction and provider-native scalar/targeted reads.
 - Keep provider mutation and unsafe timestamp-watermark offset paging out of scope.
 
 ## Remaining
 
-- Continue retained-project soak observation on the newest stable connector.
-- Keep provider write-back and new table coverage for separately reviewed work.
+- Continue retained-project soak observation on the public `0.2.0` plugin.
+- PyPI's immutable `0.2.0` long description receives the README correction only in a separately
+  approved future patch release.
 
 ## Review First
 
+- `README.md`
+- `pyproject.toml`
 - `src/dander_connector_servicenow/source.py`
-- `tests/test_source.py`
-- `tests/simulator.py`
