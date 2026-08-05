@@ -1,0 +1,9 @@
+# Changelog
+
+## 0.1.0rc1
+
+- Add the first-party `servicenow_table` Dander connector plugin.
+- Package the read-only incidents template, declared schema, and presentation-safe descriptor.
+- Preserve stable bounded full reads through Dander's generic dlt REST runtime.
+- Cover OAuth, pagination, replay, throttling, permissions, and malformed records with a stateful
+  simulator.
