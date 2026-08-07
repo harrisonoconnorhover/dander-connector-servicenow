@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1 — 2026-08-07 (alpha)
+
+- Promote the live-smoked compatibility candidate without changing connector runtime behavior.
+- Confirm successful source-free operation on public Dander `0.6.0rc2` alongside the deep
+  Salesforce acceptance pipeline.
+
 ## 0.2.1rc1 — 2026-08-06 (alpha)
 
 - Extend package compatibility through Dander `0.6.x` without changing connector runtime behavior.
