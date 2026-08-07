@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2 — 2026-08-07 (alpha)
+
+- Promote the accepted Dander 0.7 compatibility patch without connector runtime changes.
+- Confirm source-free Dander `0.7.0rc2` ingestion, governed model/tests/catalog, cleanup, and
+  Terraform no-drift in the isolated portability proof.
+
 ## 0.2.2rc1 — 2026-08-07 (alpha)
 
 - Extend package compatibility through Dander `0.7.x` without changing connector runtime
