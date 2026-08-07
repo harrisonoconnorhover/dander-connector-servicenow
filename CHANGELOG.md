@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2rc1 — 2026-08-07 (alpha)
+
+- Extend package compatibility through Dander `0.7.x` without changing connector runtime
+  behavior or plugin API v1.
+
 ## 0.2.1 — 2026-08-07 (alpha)
 
 - Promote the live-smoked compatibility candidate without changing connector runtime behavior.
