@@ -2,40 +2,36 @@
 
 ## Finished
 
-- Published stable ServiceNow connector `0.2.0` after simulator and disposable-tenant acceptance.
-- Added record-free connection testing, exact incident counts, and validated targeted lookup while
-  preserving the bounded read-only incident pipeline.
-- Installed the public plugin source-free in the retained Dander project with an exact manifest
-  pin and Dander `0.5.x` compatibility.
-- Corrected the stale README release wording.
+- Prepared ServiceNow connector `0.2.1rc1` as a compatibility-only candidate.
+- Extended the existing Dander dependency range from `0.5.x` through `0.6.x`.
+- Preserved every connector runtime, endpoint, authentication, and manifest contract.
+- Updated public release copy and the exact manifest pin example.
 
 ## Try It
 
-```bash
-uv sync --extra dev
-uv run pytest
-```
+Run `uv sync --extra dev && uv run pytest`. The locked environment installs public Dander
+`0.6.0rc1`; no ServiceNow tenant is required for the simulator-backed suite.
 
 ## Checks
 
-- Ruff, formatting, strict mypy, and all 23 simulator-backed tests passed.
-- Disposable-tenant proof covered connection, exact count, targeted lookup, hosted ingestion, and
-  replay; retained Terraform later reconciled without drift.
-- Local Markdown links and `git diff --check` passed.
+- Ruff lint/format, strict mypy, and all `23` simulator-backed tests passed.
+- Wheel and sdist built successfully.
+- The wheel installed with public Dander `0.6.0rc1` outside both repositories.
+- `git diff --check` passed.
 
 ## Decisions
 
-- Reuse Dander's generic REST runtime for extraction and provider-native scalar/targeted reads.
-- Keep provider mutation and unsafe timestamp-watermark offset paging out of scope.
+- Keep plugin API v1 and the read-only `servicenow_table` engine unchanged.
+- Use one compatibility candidate instead of weakening or bypassing the shared image resolver.
 
 ## Remaining
 
-- Continue retained-project soak observation on the public `0.2.0` plugin.
-- PyPI's immutable `0.2.0` long description receives the README correction only in a separately
-  approved future patch release.
+- Merge through protected CI and publish the approved candidate.
+- Pin it only in the isolated Salesforce acceptance project.
+- Do not alter the retained project from this compatibility patch.
 
 ## Review First
 
-- `README.md`
 - `pyproject.toml`
-- `src/dander_connector_servicenow/source.py`
+- `uv.lock`
+- `CHANGELOG.md`

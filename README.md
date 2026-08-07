@@ -15,7 +15,7 @@ Declare the exact plugin version in `dander.yaml`:
 plugins:
   servicenow:
     distribution: dander-connector-servicenow
-    version: 0.2.0
+    version: 0.2.1rc1
 ```
 
 Then install exactly what the manifest declares:
@@ -41,7 +41,7 @@ secret in Dander's configured secret store.
 - Optional reads: exact Aggregate API count and one incident lookup by validated `sys_id`
 - Connection check: authenticated Aggregate API probe that returns no incident records
 
-With Dander `0.5.0` or newer, inspect and check an installed pipeline without running ingestion:
+With Dander `0.5.x` or `0.6.x`, inspect and check an installed pipeline without running ingestion:
 
 ```console
 dander connector inspect PIPELINE_ID

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1rc1 — 2026-08-06 (alpha)
+
+- Extend package compatibility through Dander `0.6.x` without changing connector runtime behavior.
+- Validate the existing read-only ServiceNow capabilities against public Dander `0.6.0rc1`.
+- Carry the corrected public README into the next immutable PyPI description.
+
 ## 0.2.0 — 2026-08-05 (alpha)
 
 - Add record-free connection testing through ServiceNow's Aggregate API.
