@@ -7,6 +7,15 @@ First-party ServiceNow Table API connector plugin for
 > stably ordered, full-read incident pipeline. It does not propagate source deletions.
 > The connector is simulator- and live-validated against a disposable ServiceNow tenant.
 
+## Dander compatibility
+
+This release supports `dander-platform>=0.5.0,<0.10` through plugin API v1. Pin both
+packages exactly in deployments. CI installs the built connector wheel into a fresh environment
+and runs the complete connector test suite with Dander `0.5.0`, `0.7.1`, and `0.9.0rc20`.
+The normal development lock uses stable Dander `0.7.1`; release candidates must be selected
+explicitly. These checks use synthetic data and do not certify every ServiceNow
+configuration.
+
 ## Install
 
 Declare the exact plugin version in `dander.yaml`:
@@ -15,7 +24,7 @@ Declare the exact plugin version in `dander.yaml`:
 plugins:
   servicenow:
     distribution: dander-connector-servicenow
-    version: 0.2.2
+    version: 0.2.3
 ```
 
 Then install exactly what the manifest declares:
@@ -41,7 +50,7 @@ secret in Dander's configured secret store.
 - Optional reads: exact Aggregate API count and one incident lookup by validated `sys_id`
 - Connection check: authenticated Aggregate API probe that returns no incident records
 
-With Dander `0.5.x` or `0.6.x`, inspect and check an installed pipeline without running ingestion:
+With a supported Dander version, inspect and check an installed pipeline without running ingestion:
 
 ```console
 dander connector inspect PIPELINE_ID
